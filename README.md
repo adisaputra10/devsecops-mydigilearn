@@ -18,4 +18,23 @@ docker run --rm -e SONAR_HOST_URL="http://localhost:9000" \
   -v "$(pwd):/usr/src" \
   sonarsource/sonar-scanner-cli
 ```
+3. Scan Gitleak
+```
+docker --rm -v $PWD:$PWD -w $PWD playcourt/jenkins:gitleaks  detect -v --no-git  --source $PWD
+```
+4. Scan Trivy
+```
+docker run --rm -v $PWD:$PWD -v /var/run/docker.sock:/var/run/docker.sock  -w $PWD aquasec/trivy:latest image --format json --output trivy-scan.json test:latest
+```
+4. Scan Depedency check
+```
+docker run --rm \
+  -v $(pwd):/src \
+  -v $(pwd)/odc-reports:/report \
+  owasp/dependency-check \
+  --scan /src \
+  --format "ALL" \
+  --project "My Node.js App" \
+  --out /report
 
+```
